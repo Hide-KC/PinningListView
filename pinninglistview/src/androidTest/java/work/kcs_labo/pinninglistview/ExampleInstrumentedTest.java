@@ -1,4 +1,4 @@
-package work.kcs_labo.pinheaderslistview;
+package work.kcs_labo.pinninglistview;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("work.kcs_labo.pinheaderslistview.test", appContext.getPackageName());
+        assertEquals("work.kcs_labo.pinninglistview.test", appContext.getPackageName());
     }
 }

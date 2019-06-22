@@ -1,4 +1,4 @@
-package work.kcs_labo.pinheaderslistview;
+package work.kcs_labo.pinninglistview;
 
 import org.junit.Test;
 
