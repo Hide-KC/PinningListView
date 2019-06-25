@@ -1,1 +1,1 @@
-include ':app', ':pinninglistview'
+include ':app', ':pinninglistview', ':myrecyclerview'
