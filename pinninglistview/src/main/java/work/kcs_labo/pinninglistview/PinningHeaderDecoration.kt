@@ -12,6 +12,21 @@ class PinningHeaderDecoration(private val recyclerView: RecyclerView, private va
 
   override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
     super.onDrawOver(c, parent, state)
+
+    val topChild = parent.getChildAt(0) ?: return
+    val topChildPosition = parent.getChildAdapterPosition(topChild)
+    if (topChildPosition == RecyclerView.NO_POSITION) return
+
+    val currentHeader = getHeaderViewForItem(parent, topChildPosition)
+    // TODO fixLayoutSize(parent, currentHeader)
+    val contactPoint = currentHeader.bottom
+    val childInContact = getChildInContact(parent, contactPoint) ?: return
+
+    if (listener.isHeader(parent.getChildAdapterPosition(childInContact))) {
+      moveHeader(c, currentHeader, childInContact)
+    } else {
+      drawHeader(c, currentHeader)
+    }
   }
 
   private fun getHeaderViewForItem(parent: RecyclerView, itemPosition: Int): View {
