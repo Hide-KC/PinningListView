@@ -137,5 +137,6 @@ app
 myrecyclerview
 検討
 .idea/sonarlint
+HeaderItemDecoration.kt
 
 # End of https://www.gitignore.io/api/androidstudio
