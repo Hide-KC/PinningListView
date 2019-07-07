@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class PinningHeaderDecoration(private val listener: PinningHeaderListener) : RecyclerView.ItemDecoration() {
 
+  private var header = Pair<Int?, View?>(null, null)
+
   override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
     super.onDrawOver(c, parent, state)
 
@@ -17,22 +19,53 @@ class PinningHeaderDecoration(private val listener: PinningHeaderListener) : Rec
     if (adapterPosition == RecyclerView.NO_POSITION) return
     val currentHeaderPosition = listener.getCurrentHeaderPosition(adapterPosition) ?: return
 
-    val layoutResId = listener.getHeaderLayout() ?: return
+    val currentHeader = when (val layoutResId = listener.getHeaderLayout() ?: return) {
+      header.first -> {
+        header.second!!
+      }
+      else -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(layoutResId, parent, false)
+        header = Pair(layoutResId, view)
+        view
+      }
+    } ?: return
 
-    val inflater = LayoutInflater.from(parent.context)
-    val view = inflater.inflate(layoutResId, parent, false)
+    fixLayoutSize(parent, currentHeader)
+    listener.bindHeaderData(currentHeader, currentHeaderPosition)
 
-    if (view != null) {
-      fixLayoutSize(parent, view)
-      listener.bindHeaderData(view, currentHeaderPosition)
-      drawHeader(c, view)
+    val contactPoint = currentHeader.bottom
+    val nextHeaderTop = getNextHeaderPoint(parent)
+
+    if (nextHeaderTop != null
+      && nextHeaderTop <= contactPoint
+      && nextHeaderTop > 0 ) {
+      moveHeader(c, currentHeader, nextHeaderTop)
+    } else {
+      drawHeader(c, currentHeader)
     }
+  }
+
+  private fun getNextHeaderPoint(parent: RecyclerView): Int? {
+    for (childPosition in 0 until parent.childCount) {
+      val child = parent.getChildAt(childPosition)
+      val adapterPosition = parent.getChildAdapterPosition(child)
+      if (listener.isHeader(adapterPosition)) return child.top
+    }
+    return null
   }
 
   private fun drawHeader(c: Canvas, view: View) {
     c.save()
     c.translate(0F, 0F)
     view.draw(c)
+    c.restore()
+  }
+
+  private fun moveHeader(c: Canvas, currentView: View, nextViewTop: Int) {
+    c.save()
+    c.translate(0F, (nextViewTop - currentView.height).toFloat())
+    currentView.draw(c)
     c.restore()
   }
 
@@ -53,6 +86,7 @@ class PinningHeaderDecoration(private val listener: PinningHeaderListener) : Rec
   }
 
   interface PinningHeaderListener {
+    fun isHeader(adapterPosition: Int): Boolean
     fun getCurrentHeaderPosition(adapterPosition: Int): Int?
     fun getHeaderLayout() : Int?
     fun bindHeaderData(header: View, adapterPosition: Int)
