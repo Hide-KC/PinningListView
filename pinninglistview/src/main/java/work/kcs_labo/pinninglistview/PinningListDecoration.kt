@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-
-class PinningHeaderDecoration(private val listener: PinningHeaderListener) : RecyclerView.ItemDecoration() {
+class PinningListDecoration(private val listener: PinningListListener) : RecyclerView.ItemDecoration() {
 
   private var header = Pair<Int?, View?>(null, null)
 
@@ -85,7 +84,7 @@ class PinningHeaderDecoration(private val listener: PinningHeaderListener) : Rec
     view.layout(0, 0, view.measuredWidth, view.measuredHeight)
   }
 
-  interface PinningHeaderListener {
+  interface PinningListListener {
     fun isHeader(adapterPosition: Int): Boolean
     fun getCurrentHeaderPosition(adapterPosition: Int): Int?
     fun getHeaderLayout() : Int?
