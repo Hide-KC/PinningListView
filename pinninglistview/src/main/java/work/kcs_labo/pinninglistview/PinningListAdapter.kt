@@ -6,8 +6,6 @@ abstract class PinningListAdapter<E, VH : RecyclerView.ViewHolder>(private val l
   RecyclerView.Adapter<VH>(),
   PinningListDecoration.PinningListListener {
 
-  private var headerLayout: Int? = null
-
   companion object Constants {
     const val HEADER = 200
   }
@@ -23,10 +21,6 @@ abstract class PinningListAdapter<E, VH : RecyclerView.ViewHolder>(private val l
       index--
     }
     return null
-  }
-
-  override fun getHeaderLayout(): Int? {
-    return headerLayout
   }
 
   override fun getItemCount(): Int {

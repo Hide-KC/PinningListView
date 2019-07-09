@@ -18,7 +18,7 @@ class PinningListDecoration(private val listener: PinningListListener) : Recycle
     if (adapterPosition == RecyclerView.NO_POSITION) return
     val currentHeaderPosition = listener.getCurrentHeaderPosition(adapterPosition) ?: return
 
-    val currentHeader = when (val layoutResId = listener.getHeaderLayout() ?: return) {
+    val currentHeader = when (val layoutResId = listener.headerLayout ?: return) {
       header.first -> {
         header.second!!
       }
@@ -85,9 +85,9 @@ class PinningListDecoration(private val listener: PinningListListener) : Recycle
   }
 
   interface PinningListListener {
+    val headerLayout: Int?
     fun isHeader(adapterPosition: Int): Boolean
     fun getCurrentHeaderPosition(adapterPosition: Int): Int?
-    fun getHeaderLayout() : Int?
     fun bindHeaderData(header: View, adapterPosition: Int)
   }
 }
