@@ -17,7 +17,7 @@ abstract class PinningListAdapter<E, VH : RecyclerView.ViewHolder>(private val l
   override fun getCurrentHeaderPosition(adapterPosition: Int): Int? {
     var index = adapterPosition
     while (index > -1) {
-      if (getItemViewType(index) == HEADER) return index
+      if (isHeader(index)) return index
       index--
     }
     return null
