@@ -20,7 +20,7 @@ class PinningListDecoration(private val listener: PinningListListener) : Recycle
 
     val currentHeader = when (val layoutResId = listener.headerLayout ?: return) {
       header.first -> {
-        header.second!!
+        header.second
       }
       else -> {
         val inflater = LayoutInflater.from(parent.context)
