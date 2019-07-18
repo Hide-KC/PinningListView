@@ -7,11 +7,11 @@ abstract class PinningListAdapter<E, VH : RecyclerView.ViewHolder>(private val l
   PinningListDecoration.PinningListListener {
 
   companion object Constants {
-    const val HEADER = 200
+    const val SECTION_HEADER = 200
   }
 
   override fun isHeader(adapterPosition: Int): Boolean {
-    return getItemViewType(adapterPosition) == HEADER
+    return getItemViewType(adapterPosition) == SECTION_HEADER
   }
 
   override fun getCurrentHeaderPosition(adapterPosition: Int): Int? {

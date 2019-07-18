@@ -10,6 +10,10 @@ class PinningListDecoration(private val listener: PinningListListener) : Recycle
 
   private var header = Pair<Int?, View?>(null, null)
 
+  fun getHeaderWidth(): Int? = header.second?.measuredWidth
+
+  fun getHeaderHeight(): Int? = header.second?.measuredHeight
+
   override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
     super.onDrawOver(c, parent, state)
 
