@@ -1,0 +1,79 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+ext {
+    groupId = 'work.kcpoipoi'
+    artifactId = 'pinninglistview'
+    libVersion = '0.0.1'
+}
+
+group = groupId
+version = libVersion
+
+def siteUrl = "https://github.com/Hide-KC/PinningListView"
+def gitUrl = "https://github.com/Hide-KC/PinningListView.git"
+
+def loadProperties(filename) {
+    def props = new Properties()
+    file(filename).withInputStream {
+        props.load(it)
+    }
+    return props
+}
+
+bintray {
+    def props = loadProperties("$gradle.gradleUserHomeDir/gradle.properties")
+
+    user = props.bintray_user
+    key = props.bintray_key
+
+    configurations = ['archives'] //When uploading configuration files
+    pkg {
+        repo = 'maven'
+        name = "PinningListView"
+        desc = 'Custom RecyclerView that draws a header that represents a break.'
+        publish = true
+        override = true
+        websiteUrl = siteUrl
+        issueTrackerUrl = 'https://github.com/Hide-KC/PinningListView/issues'
+        vcsUrl = gitUrl
+        licenses = ['MIT']
+        labels = ['aar', 'android', 'custom view', 'recycler view']
+        publicDownloadNumbers = true
+        version {
+            name = libVersion
+        }
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            packaging 'aar'
+            groupId groupId
+            artifactId artifactId
+            name artifactId
+            version libVersion
+            url siteUrl
+            licenses {
+                license {
+                    name 'MIT License.'
+                    url 'https://opensource.org/licenses/mit-license.php'
+                }
+            }
+            developers {
+                developer {
+                    id 'kcpoiopi'
+                    name 'KC'
+                    email 'kcs.dev.labo@gmail.com'
+                }
+            }
+            scm {
+                connection siteUrl
+                developerConnection siteUrl
+                url siteUrl
+
+            }
+        }
+    }
+}

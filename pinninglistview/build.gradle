@@ -4,6 +4,12 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+/* 追加 */
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+apply plugin: 'org.jetbrains.dokka-android'
+/* 追加 */
+
 android {
     compileSdkVersion 28
 
@@ -12,7 +18,7 @@ android {
         minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
         version = android.defaultConfig.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -25,17 +31,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+}
 
-    libraryVariants.all { variant ->
-        variant.outputs.all { output ->
-            if (variant.name == android.buildTypes.release.name) {
-                outputFileName = "pinninglistview-${version}.aar"
-            } else if (variant.name == android.buildTypes.debug.name) {
-                outputFileName = "pinninglistview-debug-${version}.aar"
-            }
-        }
-    }
-
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
 }
 
 dependencies {
@@ -48,7 +48,10 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.recyclerview:recyclerview:1.1.0-beta01"
+
+    // The two libraries below are required and
+    // should be included in the applications that use the FlyingFab library
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
-repositories {
-    mavenCentral()
-}
+
+apply from: 'deploy.gradle'
