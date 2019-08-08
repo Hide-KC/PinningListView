@@ -77,3 +77,12 @@ install {
         }
     }
 }
+
+task sourcesJar(type: Jar) doLast {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives sourcesJar
+}
