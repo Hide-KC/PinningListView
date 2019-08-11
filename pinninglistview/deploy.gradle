@@ -88,12 +88,11 @@ task sourcesJar(type: Jar) doLast {
     from android.sourceSets.main.java.srcDirs
 }
 
-//task javadocJar(type: Javadoc, dependsOn: dokka) {
-//    source = android.sourceSets.main.java.srcDirs
-//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-//}
+task javadocJar(type: Jar, dependsOn: dokka) {
+
+}
 
 artifacts {
     archives sourcesJar
-//    archives javadocJar
+    archives javadocJar
 }
