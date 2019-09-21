@@ -1,14 +1,19 @@
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'org.jetbrains.dokka-android'
-apply plugin: 'signing'
+apply plugin: 'com.jfrog.bintray'
 
 ext {
-    groupId = 'work.kcs_labo'
-    artifactId = 'pinninglistview'
-    libVersion = '0.0.2'
-    libName = 'PinningListView'
-    desc = 'Custom RecyclerView that draws a header that represents a break.'
+    libGroupId = "work.kcs_labo"
+    libArtifactId = project.name //モジュール名を指定
+    libVersion = "0.0.3"
+    pkgName = 'PinningListView'
+    libDescription = 'Custom RecyclerView that draws a header that represents a break.'
+    devId = 'hide-kc'
+    devName = 'KC'
+    devMail = 'kcs.dev.labo@gmail.com'
+    licenseName = 'MIT'
+    licenseUrl = 'https://opensource.org/licenses/mit-license.php'
+    siteUrl = 'https://github.com/Hide-KC/PinningListView'
 }
 
 dokka {
@@ -16,11 +21,35 @@ dokka {
     outputDirectory = "$buildDir/javadoc"
 }
 
-group = groupId
-version = libVersion
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
 
-def siteUrl = "https://github.com/Hide-KC/PinningListView"
-def gitUrl = "https://github.com/Hide-KC/PinningListView.git"
+task javadocJar(type: Jar, dependsOn: dokka) {
+    archiveClassifier = 'javadoc'
+    from "$buildDir/javadoc"
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name licenseName
+            url licenseUrl
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id devId
+            name devName
+            email devMail
+        }
+    }
+    scm {
+        url siteUrl
+    }
+}
 
 def loadProperties(filename) {
     def props = new Properties()
@@ -30,41 +59,42 @@ def loadProperties(filename) {
     return props
 }
 
-publishing {
-    publications {
-        bintray(MavenPublication) {
-            artifactId artifactId
-            groupId groupId
-            version libVersion
+project.afterEvaluate {
+    publishing {
+        publications {
+            bintray(MavenPublication) {
+                artifactId libArtifactId
+                groupId libGroupId
+                version libVersion
 
-            pom {
-                name = libName
-                description = desc
-                url = siteUrl
-                licenses {
-                    license {
-                        name = 'MIT Lisence'
-                        url = 'https://opensource.org/licenses/mit-license.php'
+                artifact sourcesJar
+                artifact javadocJar
+                artifact bundleReleaseAar
+
+                pom.withXml {
+                    def root = asNode()
+                    root.appendNode('description', libDescription)
+                    root.appendNode('name', pkgName)
+                    root.appendNode('url', siteUrl)
+                    root.children().last() + pomConfig
+
+                    def dependenciesNode = root['dependencies'][0] ?: root.appendNode('dependencies')
+                    configurations.implementation.allDependencies.each {
+                        // Ensure dependencies such as fileTree are not included.
+                        if (it.name != 'unspecified') {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                        }
                     }
-                }
-                developers {
-                    developer {
-                        id = 'kcpoipoi'
-                        name = 'KC'
-                        email = 'kcs.dev.labo@gmail.com'
-                    }
-                }
-                scm {
-                    connection = gitUrl
-                    developerConnection = siteUrl
-                    url = siteUrl
                 }
             }
         }
-    }
-    repositories {
-        maven {
-            url = "$buildDir/repo"
+        repositories {
+            maven {
+                url "$buildDir/repo"
+            }
         }
     }
 }
@@ -74,41 +104,23 @@ bintray {
 
     user = props.bintray_user
     key = props.bintray_key
-
-    configurations = ['archives'] //When uploading configuration files
     publications = ['bintray']
+
     pkg {
         repo = 'maven'
-        name = "PinningListView"
-        desc = 'Custom RecyclerView that draws a header that represents a break.'
+        name = pkgName
+        desc = libDescription
+        websiteUrl = siteUrl
+        issueTrackerUrl = siteUrl + '/issues'
         publish = true
         override = true
-        websiteUrl = siteUrl
-        issueTrackerUrl = 'https://github.com/Hide-KC/PinningListView/issues'
-        vcsUrl = gitUrl
-        licenses = ['MIT']
-        labels = ['aar', 'android', 'custom view', 'recycler view']
+        licenses = [licenseName]
+        labels = ['android', 'custom view']
+        vcsUrl = siteUrl + '.git'
         publicDownloadNumbers = true
         version {
             name = libVersion
+            vcsTag = libVersion
         }
     }
-}
-
-//signing {
-//    sign publishing.publications.mavenJava
-//}
-
-task sourcesJar(type: Jar) doLast {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-task javadocJar(type: Jar, dependsOn: dokka) doLast {
-
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
 }
