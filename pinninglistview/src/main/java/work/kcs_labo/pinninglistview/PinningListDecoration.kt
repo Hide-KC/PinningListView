@@ -6,7 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class PinningListDecoration(private val listener: PinningListListener) : RecyclerView.ItemDecoration() {
+/**
+ * @param <E> Item object type parameter.
+ * @param <T> Used for confirm Header section (Please set the type parameter matched by E::Property).
+ * @param <H> Header object type parameter.
+ */
+class PinningListDecoration<E, T, H>(private val listener: PinningListListener<E, T, H>) :
+  RecyclerView.ItemDecoration() {
 
   private var header = Pair<Int?, View?>(null, null)
 
@@ -42,7 +48,8 @@ class PinningListDecoration(private val listener: PinningListListener) : Recycle
 
     if (nextHeaderTop != null
       && nextHeaderTop <= contactPoint
-      && nextHeaderTop > 0 ) {
+      && nextHeaderTop > 0
+    ) {
       moveHeader(c, currentHeader, nextHeaderTop)
     } else {
       drawHeader(c, currentHeader)
@@ -79,19 +86,20 @@ class PinningListDecoration(private val listener: PinningListListener) : Recycle
 
     // Specs for children (headers)
     val childWidthSpec =
-      ViewGroup.getChildMeasureSpec(widthSpec, parent.paddingLeft + parent.paddingRight, view.layoutParams.width)
+      ViewGroup.getChildMeasureSpec(
+        widthSpec,
+        parent.paddingLeft + parent.paddingRight,
+        view.layoutParams.width
+      )
     val childHeightSpec =
-      ViewGroup.getChildMeasureSpec(heightSpec, parent.paddingTop + parent.paddingBottom, view.layoutParams.height)
+      ViewGroup.getChildMeasureSpec(
+        heightSpec,
+        parent.paddingTop + parent.paddingBottom,
+        view.layoutParams.height
+      )
 
     view.measure(childWidthSpec, childHeightSpec)
 
     view.layout(0, 0, view.measuredWidth, view.measuredHeight)
-  }
-
-  interface PinningListListener {
-    val headerLayout: Int?
-    fun isHeader(adapterPosition: Int): Boolean
-    fun getCurrentHeaderPosition(adapterPosition: Int): Int?
-    fun bindHeaderData(header: View, adapterPosition: Int)
   }
 }
