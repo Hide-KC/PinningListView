@@ -18,7 +18,7 @@ abstract class PinningListAdapter<E, T, H, VH : RecyclerView.ViewHolder>(private
    * Entity of displayed list.
    * For mix Item object and Header object, type parameter is Any.
    */
-  protected val innerList: MutableList<Any> = mutableListOf()
+  private val innerList: MutableList<Any> = mutableListOf()
   private var extractor: PinningListHeaderExtractor<E, T, H>? = null
 
   companion object Constants {
@@ -29,7 +29,16 @@ abstract class PinningListAdapter<E, T, H, VH : RecyclerView.ViewHolder>(private
   }
 
   init {
-    innerList.addAll(list.map { item -> item as Any })
+    fetch(list)
+  }
+
+  fun fetch(newList: List<E>) {
+    innerList.clear()
+    innerList.addAll(newList.map { item -> item as Any })
+  }
+
+  fun getInnerListItem(adapterPosition: Int): Any {
+    return innerList[adapterPosition]
   }
 
   fun setExtractor(extractor: PinningListHeaderExtractor<E, T, H>?) {
