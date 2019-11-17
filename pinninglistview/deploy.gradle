@@ -5,7 +5,7 @@ apply plugin: 'com.jfrog.bintray'
 ext {
     libGroupId = "work.kcs_labo"
     libArtifactId = project.name //モジュール名を指定
-    libVersion = "1.0.0"
+    libVersion = "1.0.1"
     pkgName = 'PinningListView'
     libDescription = 'Custom RecyclerView that draws a header that represents a break.'
     devId = 'hide-kc'
