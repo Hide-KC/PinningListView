@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
  * @param <T> Used for confirm Header section (Please set the type parameter matched by E::Property).
  * @param <H> Header object type parameter.
  */
-class PinningListDecoration<E, T, H>(private val listener: PinningListListener<E, T, H>) :
+open class PinningListDecoration<E, T, H>(private val listener: PinningListListener<E, T, H>) :
   RecyclerView.ItemDecoration() {
 
   private var header = Pair<Int?, View?>(null, null)
